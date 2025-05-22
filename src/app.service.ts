@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
+
 
 export interface Aluno {
   id: string
@@ -10,6 +11,17 @@ export interface Aluno {
 export class AppService {
   getHello(): string {
     return 'Hello World!';
+  }
+
+  createAluno(aluno : Aluno) {
+    const existeAluno = this.alunos.find((a) => a.name === aluno.name);
+
+    if(existeAluno) {
+      throw new ConflictException('Aluno já existe.')
+    }
+
+    this.alunos.push(aluno);
+    return aluno;
   }
 
   private alunos: Aluno[] = [
